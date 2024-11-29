@@ -1,4 +1,4 @@
-# Strava Activity Analysis
+# WorkoutPlan
 
 A Python application that integrates with the Strava API to fetch and analyze my fitness activities.
 
