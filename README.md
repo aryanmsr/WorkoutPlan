@@ -11,7 +11,7 @@ A Python application that integrates with the Strava API to fetch and analyze my
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/aryanmsr/WorkoutPlan.git d
+    git clone https://github.com/aryanmsr/WorkoutPlan.git 
     ```
 
 2. Create a virtual environment and activate it:
