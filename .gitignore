@@ -1,0 +1,8 @@
+.env
+strava_tokens.json
+*.ipynb
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.DS_Store
