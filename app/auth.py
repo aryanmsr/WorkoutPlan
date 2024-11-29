@@ -9,7 +9,6 @@ from typing import List, Dict
 from stravalib.client import Client
 from utils.token_utils import load_tokens, refresh_tokens
 
-
 def get_strava_client() -> Client:
     """
     Get an authenticated Strava client.

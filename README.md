@@ -33,9 +33,9 @@ A Python application that integrates with the Strava API to fetch and analyze my
 
 ## Usage
 
-1. Perform initial authentication to save tokens:
+1. Perform initial authentication to save tokens from root dir:
     ```bash
-    python app/auth.py
+    python -m app.auth
     ```
 
 2. Run the main application:
