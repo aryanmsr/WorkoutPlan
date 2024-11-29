@@ -43,5 +43,5 @@ A Python application that integrates with the Strava API to fetch and analyze my
     python stravaapi.py
     ```
 
-## File Structure
+
 
