@@ -1,6 +1,6 @@
 # Strava Activity Analysis
 
-A Python application that integrates with the Strava API to fetch and analyze fitness activities, providing insights through modular and maintainable code.
+A Python application that integrates with the Strava API to fetch and analyze my fitness activities.
 
 ## Features
 - Authenticate with Strava API and manage access tokens.
