@@ -29,19 +29,3 @@ def get_strava_client() -> Client:
     client.refresh_token = tokens['refresh_token']
     client.token_expires_at = tokens['expires_at']
     return client
-
-
-def fetch_activities(client: Client, limit: int = 5) -> List[Dict[str, float]]:
-    """
-    Fetch recent Strava activities.
-
-    Args:
-        client (Client): An authenticated Strava client.
-        limit (int): The number of activities to fetch.
-
-    Returns:
-        List[Dict[str, float]]: A list of activities, where each activity 
-            is a dictionary containing its name and distance.
-    """
-    activities = client.get_activities(limit=limit)
-    return [{"name": activity.name, "distance": activity.distance} for activity in activities]
