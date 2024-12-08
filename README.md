@@ -38,10 +38,11 @@ A Python application that integrates with the Strava API to fetch and analyze my
     python -m app.auth
     ```
 
-2. Run the main application:
+2. Start the FastAPI server:
     ```bash
-    python stravaapi.py
+    uvicorn stravaapi:app --reload
     ```
+    This will stream tokens of fitness advice directly to your terminal. 
 
 
 
