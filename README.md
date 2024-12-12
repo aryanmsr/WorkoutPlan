@@ -40,10 +40,6 @@ A Python application that integrates with the Strava API to fetch activities, an
 - Latest Llama 3.2 model via Ollama (to run LLMs locally)
 - FastAPI 
 
-## Usage
-
-Here's a comprehensive documentation for your Strava Webhook and Advice Streaming API:
-
 # Strava Webhook Integration Documentation
 
 ## Initial Setup
