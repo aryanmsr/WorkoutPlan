@@ -68,8 +68,7 @@ class DataPreprocessor:
         df = pd.DataFrame(activity_data)
 
         df['start_date'] = pd.to_datetime(df['start_date'])
-        run_df = df
-        # run_df = df[df['type'] == 'Run'].copy()
+        run_df = df[df['type'] == 'Run'].copy()
 
         run_df['distance_km'] = run_df['distance'] / 1000
         run_df['moving_time_min'] = run_df['moving_time'] / 60
