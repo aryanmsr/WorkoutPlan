@@ -36,6 +36,9 @@ A Python application that integrates with the Strava API to fetch activities, an
     ```
 
 ## Required Dependencies
+- ngrok for public URL access.
+- Latest Llama 3.2 model via Ollama (to run LLMs locally)
+- FastAPI 
 
 ## Usage
 
