@@ -72,7 +72,7 @@ async def handle_strava_webhook(request: Request):
         payload = await request.json()
         activity_id = int(payload.get('object_id', 0))
 
-        # For some weird reason, I was getting multiple identical webhook events for the same activity. So need to handle that.
+        # For some weird reason, I was getting multiple webhook events for the same activity. So need to handle that.
         if activity_id in processed_activities:
             logger.info(f"Skipping already processed activity: {activity_id}")
             return JSONResponse(status_code=200, content={"status": "already processed"})
