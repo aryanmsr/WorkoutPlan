@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 VERIFY_TOKEN = os.getenv('STRAVA_VERIFY_TOKEN')
-processed_activities: Set[int] = set()  # Track processed activity IDs
+processed_activities: Set[int] = set()  
 
 app = FastAPI()
 email_handler = EmailHandler()
