@@ -1,28 +1,52 @@
+"""
+Handles LLM interactions using Langchain and Ollama for text generation.
+"""
+
 import asyncio
 from typing import AsyncGenerator
 from langchain.chat_models.ollama import ChatOllama
 
-async def async_generator_wrapper(generator):
-    """Convert a generator to an asynchronous iterator."""
-    for item in generator:
-        yield item
-        await asyncio.sleep(0.05)
+
+async def async_generator_wrapper(generator) -> AsyncGenerator[str, None]:
+   """Convert synchronous generator to async iterator."""
+   for item in generator:
+       yield item
+       await asyncio.sleep(0.05)
 
 class LLMAdapter:
-    """Encapsulates LLM invocation and streaming."""
-    
-    def __init__(self, model_name: str = "llama3.2:latest", temperature: float = 0.2):
-        self.llm = ChatOllama(
-            model=model_name,
-            temperature=temperature
-        )
+   """
+   Handles LLM interactions for text generation.
+   """
+   
+   def __init__(self, model_name: str = "llama3.2:latest", temperature: float = 0.2) -> None:
+       """Initialize with model configuration."""
+       self.llm = ChatOllama(
+           model=model_name,
+           temperature=temperature
+       )
 
-    async def generate_summary_stream(self, prompt: str) -> AsyncGenerator[str, None]:
-        """Generate a streaming summary from the LLM."""
-        token_generator = self.llm.stream(prompt)
-        async for chunk in async_generator_wrapper(token_generator):
-            yield chunk.content if hasattr(chunk, "content") else str(chunk)
+   async def generate_summary_stream(self, prompt: str) -> AsyncGenerator[str, None]:
+       """
+       Generate streaming response from LLM.
+       
+       Args:
+           prompt: Input text for LLM
+           
+       Returns:
+           Stream of generated text chunks
+       """
+       token_generator = self.llm.stream(prompt)
+       async for chunk in async_generator_wrapper(token_generator):
+           yield chunk.content if hasattr(chunk, "content") else str(chunk)
 
-    def generate_summary(self, prompt: str) -> str:
-        """Generate a complete summary (non-streaming)."""
-        return self.llm.invoke(prompt)
+   def generate_summary(self, prompt: str) -> str:
+       """
+       Generate complete response from LLM.
+       
+       Args:
+           prompt: Input text for LLM
+           
+       Returns:
+           Complete generated text
+       """
+       return self.llm.invoke(prompt)

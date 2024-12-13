@@ -1,5 +1,5 @@
 """
-Authentication and data fetching module for Strava.
+Authentication and data fetching script for Strava.
 
 This script handles authentication with the Strava API using tokens
 and provides functions to fetch activity data.

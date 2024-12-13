@@ -3,11 +3,13 @@ from fastapi.responses import StreamingResponse, JSONResponse
 from app.data_preprocessing import DataPreprocessor
 from app.prompt_handler import PromptHandler
 from app.llm_processor import LLMAdapter
+from app.email_handler import EmailHandler
 from datetime import datetime
 import logging
 import json
 import config
 import os
+from typing import Set
 from dotenv import load_dotenv
 
 logging.basicConfig(
@@ -18,13 +20,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 load_dotenv()
-app = FastAPI()
 VERIFY_TOKEN = os.getenv('STRAVA_VERIFY_TOKEN')
+processed_activities: Set[int] = set()  # Track processed activity IDs
+
+app = FastAPI()
+email_handler = EmailHandler()
 
 async def process_activity_data():
-    """
-    Helper function to process activity data and generate statistics
-    """
+    """Helper function to process activity data and generate statistics"""
     try:
         preprocessor = DataPreprocessor()
         preprocessor.fetch_activities()
@@ -37,12 +40,9 @@ async def process_activity_data():
         logger.error(f"Error processing activity data: {str(e)}")
         return False
 
-
 @app.get("/strava-webhook")
 async def validate_strava_webhook(request: Request):
-    """
-    Validate Strava webhook subscription
-    """
+    """Validate Strava webhook subscription"""
     params = request.query_params
     
     hub_mode = params.get('hub.mode')
@@ -58,37 +58,42 @@ async def validate_strava_webhook(request: Request):
     if (hub_mode == 'subscribe' and 
         hub_verify_token == VERIFY_TOKEN and 
         hub_challenge):
-        
         logger.info("Webhook validation successful")
-        return JSONResponse(
-            content={"hub.challenge": hub_challenge}
-        )
+        return JSONResponse(content={"hub.challenge": hub_challenge})
     
     logger.error("Webhook validation failed")
     logger.error(f"Token match: {hub_verify_token == VERIFY_TOKEN}")
     raise HTTPException(status_code=403, detail="Verification failed")
 
-
 @app.post("/strava-webhook")
 async def handle_strava_webhook(request: Request):
-    """
-    Handle incoming Strava webhook events and generate advice
-    """
+    """Handle incoming Strava webhook events and generate advice"""
     try:
         payload = await request.json()
-        logger.info("============ WEBHOOK TRIGGERED ============")
+        activity_id = int(payload.get('object_id', 0))
+
+        # For some weird reason, I was getting multiple identical webhook events for the same activity. So need to handle that.
+        if activity_id in processed_activities:
+            logger.info(f"Skipping already processed activity: {activity_id}")
+            return JSONResponse(status_code=200, content={"status": "already processed"})
+
+        logger.info("\n=== WEBHOOK PAYLOAD DETAILS ===")
+        logger.info(f"Full payload: {payload}")
         logger.info(f"Time: {datetime.now()}")
         logger.info(f"Event Type: {payload.get('aspect_type')}")
         logger.info(f"Object Type: {payload.get('object_type')}")
-        logger.info(f"Activity ID: {payload.get('object_id')}")
-        logger.info("=========================================")
+        logger.info(f"Activity ID: {activity_id}")
+        logger.info(f"Owner ID: {payload.get('owner_id')}")
+        logger.info(f"Updates: {payload.get('updates', {})}")
+        logger.info("===============================\n")
         
         if (payload.get('object_type') == 'activity' and 
             payload.get('aspect_type') == 'create'):
             
-            # Processing activity data
+            processed_activities.add(activity_id)  
+            logger.info("Processing new activity creation...")
+
             if await process_activity_data():
-                # Generating advice
                 try:
                     with open(config.ACTIVITY_DATA_PATH, "r") as file:
                         activity_data = json.load(file)
@@ -104,7 +109,14 @@ async def handle_strava_webhook(request: Request):
                         advice += token
                     
                     logger.info("New advice generated:")
-                    logger.info(advice)  
+                    logger.info(advice)
+
+                    subject = "New Workout Advice Available!"
+                    if await email_handler.send_email(subject, advice):
+                        logger.info("Email sent successfully")
+                        return JSONResponse(status_code=200, content={"status": "processed"})
+                    else:
+                        logger.error("Failed to send email")
                     
                 except Exception as e:
                     logger.error(f"Error generating advice: {str(e)}")

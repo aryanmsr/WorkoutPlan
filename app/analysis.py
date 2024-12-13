@@ -1,5 +1,5 @@
 """
-Module for analyzing Strava activity data.
+Script for analyzing Strava activity data.
 
 This script contains functionality to analyze activities fetched
 from the Strava API, providing metrics such as total distance,
@@ -15,11 +15,11 @@ def analyze_activities(activities: List[Dict[str, float]]) -> Dict[str, float]:
 
     Args:
         activities (List[Dict[str, float]]): A list of activity data, 
-            where each activity is a dictionary with keys like 'distance'.
+        where each activity is a dictionary with keys like 'distance'.
 
     Returns:
         Dict[str, float]: A dictionary containing the total distance,
-            average distance, and activity count.
+        average distance, and activity count.
     """
     total_distance = sum(activity['distance'] for activity in activities)
     avg_distance = total_distance / len(activities) if activities else 0
