@@ -9,6 +9,7 @@ import logging
 import json
 import config
 import os
+import uvicorn
 from typing import Set
 from dotenv import load_dotenv
 
@@ -215,5 +216,5 @@ async def test_webhook():
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    import uvicorn
+    
     uvicorn.run(app, host="0.0.0.1", port=8000)
