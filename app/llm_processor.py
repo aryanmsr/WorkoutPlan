@@ -1,43 +1,23 @@
 """
-Handles LLM interactions using Langchain and Ollama for text generation.
+Handles LLM interactions using Hugging Face's API for text generation.
 """
 
-import asyncio
+from huggingface_hub import InferenceClient
+import os
 from typing import AsyncGenerator
-from langchain.chat_models.ollama import ChatOllama
+from dotenv import load_dotenv
+import asyncio
 
-
-async def async_generator_wrapper(generator) -> AsyncGenerator[str, None]:
-   """Convert synchronous generator to async iterator."""
-   for item in generator:
-       yield item
-       await asyncio.sleep(0.05)
+load_dotenv()
 
 class LLMAdapter:
-   """
-   Handles LLM interactions for text generation.
-   """
+   """Handles LLM interactions for text generation."""
    
-   def __init__(self, model_name: str = "llama3.2:latest", temperature: float = 0.2) -> None:
+   def __init__(self, model_name: str = "mistralai/Mistral-7B-Instruct-v0.3", temperature: float = 0.7) -> None:
        """Initialize with model configuration."""
-       self.llm = ChatOllama(
-           model=model_name,
-           temperature=temperature
-       )
-
-   async def generate_summary_stream(self, prompt: str) -> AsyncGenerator[str, None]:
-       """
-       Generate streaming response from LLM.
-       
-       Args:
-           prompt: Input text for LLM
-           
-       Returns:
-           Stream of generated text chunks
-       """
-       token_generator = self.llm.stream(prompt)
-       async for chunk in async_generator_wrapper(token_generator):
-           yield chunk.content if hasattr(chunk, "content") else str(chunk)
+       self.client = InferenceClient(api_key=os.getenv('HUGGINGFACE_TOKEN'))
+       self.model_name = model_name
+       self.temperature = temperature
 
    def generate_summary(self, prompt: str) -> str:
        """
@@ -49,4 +29,48 @@ class LLMAdapter:
        Returns:
            Complete generated text
        """
-       return self.llm.invoke(prompt)
+       try:
+           messages = [{"role": "user", "content": prompt}]
+           
+           completion = self.client.chat.completions.create(
+               model=self.model_name,
+               messages=messages,
+               temperature=self.temperature,
+               max_tokens=10000
+           )
+           
+           return completion.choices[0].message.content
+           
+       except Exception as e:
+           print(f"Exception occurred: {str(e)}")
+           return f"Error: {str(e)}"
+
+   async def generate_summary_stream(self, prompt: str) -> AsyncGenerator[str, None]:
+       """
+       Generate streaming response from LLM.
+       
+       Args:
+           prompt: Input text for LLM
+           
+       Returns:
+           AsyncGenerator yielding text chunks
+       """
+       try:
+           messages = [{"role": "user", "content": prompt}]
+           
+           stream = self.client.chat.completions.create(
+               model=self.model_name,
+               messages=messages,
+               temperature=self.temperature,
+               max_tokens=10000,
+               stream=True
+           )
+           
+           for chunk in stream:
+               if chunk.choices[0].delta.content is not None:
+                   yield chunk.choices[0].delta.content
+                   await asyncio.sleep(0.01)  # Small delay to control stream rate
+               
+       except Exception as e:
+           print(f"Exception occurred in stream: {str(e)}")
+           yield f"Error: {str(e)}"

@@ -5,6 +5,7 @@ This module processes Strava activity data, generates personalized advice using 
 and sends email notifications for new activities.
 """
 
+import asyncio
 import json
 import logging
 import os
@@ -38,6 +39,7 @@ processed_activities: Set[int] = set()
 # Initializing FastAPI app and handlers
 app = FastAPI()
 email_handler = EmailHandler()
+
 
 async def process_activity_data() -> bool:
     """
@@ -146,11 +148,7 @@ async def handle_strava_webhook(request: Request) -> JSONResponse:
                         summary_statistics
                     )
                     llm_adapter = LLMAdapter(model_name=config.MODEL_NAME)
-                    
-                    advice = ''
-                    async for token in llm_adapter.generate_summary_stream(prompt):
-                        advice += token
-                    
+                    advice = llm_adapter.generate_summary(prompt)                    
                     logger.info('New advice generated:')
                     logger.info(advice)
 

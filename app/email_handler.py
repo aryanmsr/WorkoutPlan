@@ -65,7 +65,6 @@ class EmailHandler:
                server.starttls()
                server.login(self.sender_email, self.sender_password)
                server.send_message(msg)
-
            return True
        except Exception as e:
            print(f"Error sending email: {str(e)}")
