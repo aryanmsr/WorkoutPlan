@@ -1,11 +1,11 @@
 [
     {
         "type":"root='Run'",
-        "total_activities":30,
-        "avg_distance_km":5.9199533333,
-        "avg_moving_time_min":35.5633333333,
-        "avg_pace_min_per_km":5.88870829,
-        "total_distance_km":177.5986,
-        "total_moving_time_min":1066.9
+        "total_activities":29,
+        "avg_distance_km":5.8832827586,
+        "avg_moving_time_min":34.566091954,
+        "avg_pace_min_per_km":5.7660939855,
+        "total_distance_km":170.6152,
+        "total_moving_time_min":1002.4166666667
     }
 ]

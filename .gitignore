@@ -1,5 +1,4 @@
 .env
-strava_tokens.json
 *.ipynb
 __pycache__/
 *.pyc
