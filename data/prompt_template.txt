@@ -20,4 +20,4 @@ Your response should:
 - Use friendly and motivational language to encourage the individual to stay committed to their fitness journey.
 - Avoid generic advice and base all recommendations on the provided data.
 
-Write your response directly as if you are addressing the individual.
+Write your response directly as if you are addressing the individual. Ensure you add a quote from a famous athlete always at the end of your message.
