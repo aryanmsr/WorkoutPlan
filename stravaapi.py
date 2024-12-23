@@ -172,79 +172,7 @@ async def handle_strava_webhook(request: Request) -> JSONResponse:
 
         return JSONResponse(status_code=200, 
                             content={'status': 'error', 'message': str(e)})
-    
-# async def handle_strava_webhook(request: Request) -> JSONResponse:
-#     """
-#     Handle incoming Strava webhook events and generate advice.
 
-#     Args:
-#         request: FastAPI request object
-
-#     Returns:
-#         JSONResponse: Status of webhook processing
-#     """
-#     try:
-#         payload = await request.json()
-#         activity_id = int(payload.get('object_id', 0))
-
-#         if activity_id in processed_activities:
-#             logger.info(f'Skipping already processed activity: {activity_id}')
-#             return JSONResponse(
-#                 status_code=200,
-#                 content={'status': 'already processed'}
-#             )
-
-#         logger.info('\n=== WEBHOOK PAYLOAD DETAILS ===')
-#         logger.info(f'Full payload: {payload}')
-#         logger.info(f'Time: {datetime.now()}')
-#         logger.info(f'Event Type: {payload.get("aspect_type")}')
-#         logger.info(f'Object Type: {payload.get("object_type")}')
-#         logger.info(f'Activity ID: {activity_id}')
-#         logger.info(f'Owner ID: {payload.get("owner_id")}')
-#         logger.info(f'Updates: {payload.get("updates", {})}')
-#         logger.info('===============================\n')
-        
-#         if (payload.get('object_type') == 'activity' and 
-#                 payload.get('aspect_type') == 'create'):
-            
-#             processed_activities.add(activity_id)
-#             logger.info('Processing new activity creation...')
-
-#             if await process_activity_data():
-#                 try:
-#                     with open(config.ACTIVITY_DATA_PATH, 'r') as file:
-#                         activity_data = json.load(file)
-#                     with open(config.SUMMARY_STATS_PATH, 'r') as file:
-#                         summary_statistics = json.load(file)
-
-#                     prompt_handler = PromptHandler(config.PROMPT_TEMPLATE_PATH)
-#                     prompt = prompt_handler.format_prompt(
-#                         activity_data,
-#                         summary_statistics
-#                     )
-#                     llm_adapter = LLMAdapter(model_name=config.MODEL_NAME)
-#                     advice = llm_adapter.generate_summary(prompt)                    
-#                     logger.info('New advice generated:')
-#                     logger.info(advice)
-
-#                     subject = 'New Workout Advice Available!'
-#                     if await email_handler.send_email(subject, advice):
-#                         logger.info('Email sent successfully')
-#                         return JSONResponse(
-#                             status_code=200,
-#                             content={'status': 'processed'}
-#                         )
-#                     logger.error('Failed to send email')
-                    
-#                 except Exception as e:
-#                     logger.error(f'Error generating advice: {str(e)}')
-            
-#         return JSONResponse(status_code=200, content={'status': 'received'})
-#     except Exception as e:
-#         logger.error(f'Webhook error: {str(e)}')
-
-#         return JSONResponse(status_code=200, 
-#                             content={'status': 'error', 'message': str(e)})
     
 
 @app.get('/stream_advice')
