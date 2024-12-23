@@ -1,6 +1,6 @@
 [
     {
-        "id":13122813203,
+        "id":13124294202,
         "name":"Evening Run",
         "type":"root='Run'",
         "start_date":"2024-12-12T01:41:18.000Z",
@@ -9,7 +9,7 @@
         "elapsed_time_min":11.6166666667,
         "total_elevation_gain":0.0,
         "average_speed_kmh":10.926,
-        "kudos_count":0,
+        "kudos_count":1,
         "max_speed_kmh":14.184,
         "pace_min_per_km":5.4921625817,
         "speed_diff_kmh":3.258,
