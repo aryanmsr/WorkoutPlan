@@ -1,10 +1,10 @@
-# 🏃 **WorkoutPlan**
+# **WorkoutPlan**
 
 An application that integrates with the **Strava API** to fetch and analyze my fitness activities, generate personalized fitness advice and motivation using a **LLM (Large Language Model)**, and deliver insights via **email notifications**.
 
 ---
 
-## 🚀 **Features**
+## **Features**
 
 - **Strava Integration:**  
    - Fetch recent activities such as runs, rides, and hikes.  
@@ -27,7 +27,7 @@ An application that integrates with the **Strava API** to fetch and analyze my f
 
 ---
 
-## 📦 **Tech Stack**
+## **Tech Stack**
 
 - **Backend Framework:** FastAPI, Python 
 - **Database:** SQLite  
